@@ -1,36 +1,10 @@
 # REPORT — what the measurement showed, who it affects, and whose responsibility it is
-<!-- STUDENT: replace -->
 
-Replace this whole template with your own text. Delete the line above (the `STUDENT: replace`
-marker) once you have, and delete these instructions and the guiding questions too. Keep the three
-numbered headings. Every number you quote must be one **your own notebook printed**, copied exactly,
-with the group it refers to (which attribute, how many pairs). Which dimension each section is
-graded against is in the README.
-
-The guiding questions are prompts, not a form: you do not have to answer each one in turn, and
-answering them without evidence from your run earns nothing.
 
 ## 1. Measurement read-out
 
-(Dimension: Evidence of Specific Impact.)
-
-Guiding questions:
-
-- For each attribute (name language, gender-coded name, university): how many pairs, how many
-  flips, in which direction, and what was the typical score shift? Are these counts and magnitudes,
-  or a description of them?
-- Which attribute moved the decision, and by how much, **read against its own floor**? If a real
-  attribute's divergence is no larger than its floor's, what does that allow you to say, and
-  what does it not?
-- How much of the divergence could be noise? What do the two floors (`null_name` for the name
-  attributes, `null_university` for the university) test, and what do they leave untested (think about
-  what they change and what they keep fixed)? What would a stronger estimate require?
-- If nothing stands clear of its floor: what exactly can you say (counts, intervals), what could your
-  number of pairs have detected and not detected, and why is "no measured effect" not "no effect"?
-- Would the same attribute behave the same way with a different prompt wording, a different
-  model, or real applicants? Say what your run can and cannot support.
-
 **My answer:**
+
 **Design.** For each attribute I made 40 matched pairs (using seed 2026), so in total there is 200 pairs and 400 profiles. Every profile was checked one time by `Qwen2.5-3B-Instruct` with greedy decoding (one call per model, 400 calls all together). Two profiles in one pair are completely same on programme, GPA, exam score, income bracket, achievements, age and consent — only one single line is different between them. For baseline noise (floors) I used two types of null pairs: `null_name` (just changing to another name from same language group and same gender coding) for both name attributes, and `null_university` (another university from same tier) for university attribute.
 
 **Baseline.** The bare agent put 356 profiles out of 400 into shortlist and rejected 44. Good thing is 0 out of 400 answers was broken/unparseable. Rejected profiles got scores between 20 and 45 (median is 40), and shortlisted ones got 45–85 (median is 75). Inside the 40–49 score range there is 33 rejects and 31 shortlists, so the decision border sits near 45 and it is very crowded there.
@@ -65,24 +39,8 @@ Shortlist rates per group: female-coded 90.0 % vs male-coded 80.0 % (n = 40 each
 
 ## 2. Who is affected
 
-(Dimension: Affected Parties and the Consequences They Bear.)
-
-Guiding questions:
-
-- On each side of a **wrong** decision, who is it? Who is wrongly rejected, and who is wrongly
-  shortlisted (and therefore who is displaced from a limited number of places)? Tie each group
-  to a divergence you measured, not to a general statement that "some groups may be harmed".
-- What does each wrong decision cost the person it falls on (money, a place, time, a record
-  that follows them)? Is the cost the same for a wrongly rejected applicant and a wrongly shortlisted one?
-- Which parties does the brief not mention, but that are affected anyway (people who never
-  applied because they expected to be rejected; the staff who review escalated cases; the fund;
-  applicants from institutions the model has never seen)?
-- If you measured no divergence beyond the floors: who would bear the cost if there were one that your
-  sample could not detect? Tie that to what your number of pairs could and could not see.
-- Which consequences compound when the agent is used year after year, or when its output is
-  used as an input to the next stage (a later review, another fund, a published ranking)?
-
 **My answer:**
+
 Since the fund has only limited scholarship spots, every mistake hits two sides at once.
 
 - **Wrongly rejected:** from my measurements, this hurts applicants from **regional universities**, because they get 2.5 points [+1.1, +4.1] less than identical flagship twins. Also — as an unconfirmed trend — it hurts applicants with **male-coded names**, who lost in all 4 gender flips (shortlist rate 80.0 % vs 90.0 %). Only 1 out of 40 university pairs actually flipped decision, but because the border is crowded (33 rejects and 31 shortlists sit in 40–49), this 2.5-point drop hits directly the borderline regional students. For them the price is losing the scholarship itself (money and maybe whole chance to study), wasting a year, and getting a rejection with zero explanation because the bare pipeline gives no reason code and no human to talk to. Usually regional university students have less backup options, so rejection hurts them much harder.
@@ -94,21 +52,8 @@ Since the fund has only limited scholarship spots, every mistake hits two sides 
 - 
 ## 3. Professional responsibility
 
-(Dimension: Recognition of Professional Responsibility.)
-
-Guiding questions:
-
-- Given what you measured, what are **your** specific responsibilities as the developer of the
-  harness: what must you check before it runs, what must you tell the people who deploy it, what
-  must you not claim about it?
-- What would discharging each of those responsibilities require in practice (a test, a
-  documented limit, a stop condition)? What have you actually done in this lab, and what is left?
-- Which responsibilities belong to the **institution** that deploys the system (setting the
-  purpose, choosing who reviews, handling appeals) rather than to you?
-- Where do the two conflict? For example, what happens if the institution wants a control removed
-  because it slows the process or costs money, and you have measured what that control prevents?
-
 **My answer:**
+
 **Mine, as the developer of the harness:**
 1. *Measure before deployment and report honestly.* Done: Parts 1 and 3 are done and compared against floors. I cannot say my harness "removed bias" — when name and university are hidden, after-flips become zero **by construction**. What I can honestly say is that model doesn't see those lines anymore, that 46 of 400 decisions and 166 of 400 scores (average |Δ| 14.01) changed when I removed them — which doesn't prove model used those attributes, because prompt structure changed too — and that 34 of 400 cases (8.5 %) were sent to a human. Also, the harness run showed something important I must tell the deployer: hiding those fields kicked 19 shortlisted students out of the shortlist and moved 5 rejected ones in, changing scores by 14 points on average — which is bigger than any bias effect from the attributes themselves. A change like this must be tested carefully before real use, not just assumed to be neutral.
 2. *Make failures visible.* Done: broken/unparseable answers get sent to human review instead of quiet rejection; every model call, refusal, and escalation is saved in `decisions.jsonl`.
