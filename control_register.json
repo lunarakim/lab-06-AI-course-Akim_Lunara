@@ -1,0 +1,52 @@
+{
+  "harness_controls": [
+    "validate_input",
+    "blind",
+    "refuse",
+    "log",
+    "escalate"
+  ],
+  "format_problems": [],
+  "entries": [
+    {
+      "control": "validate_input",
+      "principle": "Robustness, security and safety",
+      "principle_source": "OECD Recommendation of the Council on Artificial Intelligence, OECD/LEGAL/0449 (2019, amended 2024), principle 1.4 (non-binding recommendation)",
+      "instrument": "Law of the Republic of Kazakhstan No. 230-VIII 'On Artificial Intelligence' of 17 November 2025",
+      "provision": "Art. 11 part 1 (systems built and operated with safety and reliability requirements, preventing unforeseen consequences); Art. 15 part 2 subpoint 2 (owner ensures safety and reliability)",
+      "why_here": "The bare pipeline in Part 4 screened GPA 9.9 / exam -5 and returned a decision; a decision about a person built on impossible values is unreliable, so they are refused before any model call."
+    },
+    {
+      "control": "blind",
+      "principle": "Fairness and non-discrimination",
+      "principle_source": "UNESCO Recommendation on the Ethics of Artificial Intelligence (adopted 23 November 2021), Section III.2 'Fairness and non-discrimination' (non-binding recommendation)",
+      "instrument": "Constitution of the Republic of Kazakhstan (30 August 1995); Law of the Republic of Kazakhstan No. 230-VIII 'On Artificial Intelligence' of 17 November 2025; Law of the Republic of Kazakhstan No. 94-V 'On Personal Data and Their Protection' of 21 May 2013 (as amended)",
+      "provision": "Constitution Art. 14 part 2 (no discrimination on grounds incl. origin, sex, language, place of residence); AI Law Art. 6 (fairness and equality, any discrimination excluded); PD Law Art. 7 p. 9 (no data excessive for the purpose)",
+      "why_here": "Part 1: flips stayed within the floors, but flagship twins scored +2.5 [+1.1, +4.1] points above identical regional twins (sign p = 0.002) and all 4 gender flips went against male-coded names; neither line is a merit criterion, so the model is not shown them."
+    },
+    {
+      "control": "refuse",
+      "principle": "Respect for human rights, autonomy and privacy (purpose limitation, consent)",
+      "principle_source": "OECD Recommendation of the Council on Artificial Intelligence, OECD/LEGAL/0449 (2019, amended 2024), principle 1.2 (non-binding recommendation)",
+      "instrument": "Law of the Republic of Kazakhstan No. 94-V 'On Personal Data and Their Protection' of 21 May 2013 (as amended); Law of the Republic of Kazakhstan No. 230-VIII 'On Artificial Intelligence' of 17 November 2025",
+      "provision": "PD Law Art. 7 p. 1 (consent of the subject or legal representative), Art. 7 p. 8 (specific, lawful purposes only), Art. 19-1 p. 1 (automated processing affecting rights only with consent); AI Law Art. 11 part 1 (prevent misuse)",
+      "why_here": "Part 4 showed the bare pipeline screens a forbidden purpose, a minor, a non-consenting applicant and an instruction typed into the name field without objection; these must stop before the model."
+    },
+    {
+      "control": "log",
+      "principle": "Accountability and traceability",
+      "principle_source": "OECD Recommendation of the Council on Artificial Intelligence, OECD/LEGAL/0449 (2019, amended 2024), principle 1.5 (non-binding recommendation)",
+      "instrument": "Law of the Republic of Kazakhstan No. 230-VIII 'On Artificial Intelligence' of 17 November 2025; benchmark only: Regulation (EU) 2024/1689 (AI Act)",
+      "provision": "AI Law Art. 8 parts 1-2 (constant control, responsibility for outputs) and Art. 15 part 2 subpoint 3 (system documentation); AI Act Art. 12 and Art. 26 para. 6 (logs) used as a benchmark: it does not bind a Kazakh fund (Art. 2)",
+      "why_here": "Part 1 found 7 flips in the 120 real-attribute pairs and score shifts in 27 of them, all with identical merit; without a per-decision record of what the model saw and why, no applicant or auditor could check a single one of them."
+    },
+    {
+      "control": "escalate",
+      "principle": "Human oversight and determination",
+      "principle_source": "UNESCO Recommendation on the Ethics of Artificial Intelligence (adopted 23 November 2021), Section III.2 'Human oversight and determination' (non-binding recommendation)",
+      "instrument": "Law of the Republic of Kazakhstan No. 94-V 'On Personal Data and Their Protection' of 21 May 2013 (as amended); Law of the Republic of Kazakhstan No. 230-VIII 'On Artificial Intelligence' of 17 November 2025",
+      "provision": "PD Law Art. 19-1 p. 2-3 (explain automated processing, right to object, objection reviewed in 3 working days); AI Law Art. 7 part 2 (right to know and object) and Art. 8 part 1 (human control)",
+      "why_here": "Part 1: rejects scored 20-45 and shortlists 45-85, with 33 rejects and 31 shortlists in the 40-49 bin; there a shift the size of the +2.5 flagship gap decides, so those cases (and inconsistent or unparseable replies) go to a person."
+    }
+  ]
+}
