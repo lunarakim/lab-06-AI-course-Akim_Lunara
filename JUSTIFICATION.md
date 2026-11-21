@@ -1,33 +1,9 @@
 # JUSTIFICATION — the design of the harness, and why
-<!-- STUDENT: replace -->
-
-Replace this whole template with your own text. Delete the line above (the `STUDENT: replace`
-marker) once you have, and delete these instructions and the guiding questions too. Keep the headings
-that follow. Which dimension each section is graded against is in the README.
-
-Two rules for the whole document:
-
-- **Every claim about a law needs a citation to the instrument and the provision** it rests on,
-  written so a reader can find the text. You identify the instruments yourself, from the primary text.
-  A chat model's statement is not a citation.
-- **Everything you describe must be in the code or in the submitted run.** A control you describe
-  but did not build, or a refusal you state but never triggered, belongs under "what the design still
-  fails to protect against".
-
-The guiding questions are prompts, not a form.
 
 ## 1. What the system may do
 
-(Dimension: Integration of Constraints into the Design.)
-
-- What is the system for, stated narrowly? What decisions may it make on its own, and which may it only
-  inform?
-- For each control you built (input validation, blinding, refusal, log, escalation): which
-  constraint made you build it, and where in the code can a reader find it?
-- Did any constraint change the architecture itself, so that the design would be different without it?
-  Name a decision you made differently because of a constraint, and what you would have done otherwise.
-
 **My answer**
+
 **Purpose, stated narrowly.** The main goal is to pre-screen applications for (fictional) Tulpar Scholarship Fund based only on merit and financial need: programme, GPA, entrance-exam score, household income bracket, and achievements. The system can *recommend* shortlist or reject and give a score. It is allowed to make final decision alone only for very clear cases outside the escalation band, where model output parsed nicely and everything inside is consistent. It must never decide by itself if case is borderline, inconsistent, broken/unparseable, or if stated reason mentions a forbidden ground — all those cases go straight to a human. Also it cannot be used for any other task (`ALLOWED_PURPOSES = {"scholarship_screening"}`).
 
 **Controls, the constraint behind each, and where they are** (all in the notebook, Part 2; enforced by
@@ -45,15 +21,8 @@ The guiding questions are prompts, not a form.
 
 ## 2. What it must refuse
 
-(Dimension: Refusal Boundaries and Enforcement.)
-
-- What does it refuse (purposes, inputs, applicants)? Where is each refusal enforced in code, and
-  where in your submitted run did it fire?
-- For each refusal: **which legitimate case does it also block**, and who bears that cost? Is that cost
-  acceptable, and why?
-- What happens to a refused request: is it recorded, is anyone told, can the person ask for a decision to
-  be made by a human instead?
 **My answer**
+
   | refused | reason code | where enforced | fired in the submitted run |
 |---|---|---|---|
 | any purpose other than scholarship screening | `purpose_not_allowed` | `refusal_reason` | Part 4, "rank applicants by ethnicity" |
@@ -71,16 +40,8 @@ The guiding questions are prompts, not a form.
 
 ## 3. What record it keeps
 
-(Dimension: Accountability Record and Auditability.)
-
-- What is the **audit question** your record is designed to answer (for example, "why did this
-  applicant get this outcome, and could someone else reconstruct it without re-running the model?")?
-  State it in one sentence, then show that a record in `decisions.jsonl` answers it.
-- What is in each record, and what is left out on purpose (for example, personal data you chose not to
-  store)? Why that line?
-- How long is the record kept, who may read it, who may change it, and what stops a record being
-  edited after the fact? What does the record not let you reconstruct?
 **My answer**
+
   **Audit question:** *"Why did this applicant get this outcome, and can someone reconstruct it a year later
 without re-running the model?"*
 
@@ -92,16 +53,8 @@ Every line inside `decisions.jsonl` (one line per call: 406 records total in sub
 
 ## 4. The legal constraints
 
-(Dimension: Identification and Citation of Legal Constraints.)
-
-- Which instruments apply to an automated screening decision about people, and why do they
-  apply to this system (jurisdiction, subject matter, who is the operator)? Cite the instrument and the
-  provision for each.
-- For each, what does the law **require** of the system, and what does it merely **permit** or leave
-  to you? Where did you do more than the law requires, and why?
-- Where is the text you cite stated to apply to automated decisions specifically? If you could
-  not find a provision for a control, say so rather than inventing one.
 **My answer**
+
   **Which instruments apply, and why.** Since fund works in Kazakhstan, handles applicants' personal data, and uses AI to make decisions about people, these laws apply:
 
 1. **Constitution of the Republic of Kazakhstan (30 August 1995), Art. 14 part 2** — forbids discrimination based on origin, sex, language, place of residence "or any other circumstances". Name language and gender coding connect to *language/origin* and *sex*; university tier connects to *place of residence/social position*. → `blind`.
@@ -112,18 +65,9 @@ Every line inside `decisions.jsonl` (one line per call: 406 records total in sub
 **Required vs permitted.** Required by law: consent before AI processing, purpose limits, way to object and get human check (PD Law Art. 19-1), non-discrimination, and risk control. Up to me: *how* to do it — law does not say "hide name" or "use 37–45 band". **Beyond the law:** Kazakh law doesn't strictly require logging every single decision (only general system documentation, AI Law Art. 15(2)(3)), so I built decision log based on EU AI Act and accountability idea. Also law doesn't mention prompt injection directly; my instruction filter comes from general safety rule (AI Law Art. 11(1)).
 
 ## 5. The ethical principles
-
-(Dimension: Identification of Applicable Ethical Principles.)
-
-- Which principles govern an automated screening decision, and which decision in **this** system does
-  each bear on (not in general)? Cite the source in which you found each principle named, and say
-  what status that text has.
-- Where do the principles conflict with one another in your design (for example, between
-  treating applicants identically and treating applicants fairly given what you measured)? Which did
-  you put first, and why?
-- Where does ethics demand something the law does not?
   
 **My answer**
+
   | principle | source (status) | decision in *this* system it bears on |
 |---|---|---|
 | Fairness and non-discrimination | UNESCO Recommendation on the Ethics of AI (2021), §III.2 (non-binding recommendation of 193 member states) | hiding name and university; escalating reasons that cite them |
@@ -136,19 +80,8 @@ Every line inside `decisions.jsonl` (one line per call: 406 records total in sub
 
 ## 6. The trade-offs
 
-(Dimension: Trade-off Analysis and Justification.)
-
-- For each control: what does it cost (errors, speed, reviewer time, applicant privacy, extra model
-  calls), and what harm does it prevent? Use your before-and-after measurement where you can.
-- The width of your escalation band is a trade-off too: how many applicants does it send to a person, who reads
-  them, and what happens to the cases outside it that nobody re-checks? A threshold calibrated on one
-  configuration does not transfer to another: did you recalibrate it after you changed what the model
-  sees, and what share was actually escalated?
-- Why did you choose the balance you did, and what would make you choose differently?
-- What does the design **still fail to protect against**? What would closing that gap take, and why did
-  you not do it?
-
 **My answer**
+
 | control | cost (measured) | harm prevented |
 |---|---|---|
 | validate_input | 0 model calls; risk of refusing a real but unusual value (0 wrong refusals of 400) | decisions on impossible data (Part 4) |
